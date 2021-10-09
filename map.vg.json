@@ -1,0 +1,90 @@
+{
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "background": "white",
+  "padding": 5,
+  "width": 450,
+  "height": 300,
+  "title": {"text": "US Religion Distribution", "frame": "group"},
+  "data": [
+    {
+      "name": "source_1",
+      "url": "https://raw.githubusercontent.com/xjyeon/FIT_3179/main/religion-participants.csv",
+      "format": {"type": "csv", "delimiter": ","}
+    },
+    {
+      "name": "source_0",
+      "url": "https://raw.githubusercontent.com/xjyeon/FIT_3179/main/cb_2018_us_region_500k.json",
+      "format": {
+        "type": "topojson",
+        "feature": "cb_2018_us_region_500k",
+        "parse": {}
+      },
+      "transform": [
+        {
+          "type": "formula",
+          "expr": "datum[\"properties\"] && datum[\"properties\"][\"NAME\"]",
+          "as": "properties.NAME"
+        },
+        {
+          "type": "lookup",
+          "from": "source_1",
+          "key": "Region",
+          "fields": ["properties.NAME"],
+          "values": ["Protestants"]
+        },
+        {"type": "formula", "expr": "datum.Protestants", "as": "Protestants"},
+        {
+          "type": "filter",
+          "expr": "isValid(datum[\"Protestants\"]) && isFinite(+datum[\"Protestants\"])"
+        }
+      ]
+    }
+  ],
+  "projections": [
+    {
+      "name": "projection",
+      "size": {"signal": "[width, height]"},
+      "fit": {"signal": "data('source_0')"},
+      "type": "albersUSA"
+    }
+  ],
+  "marks": [
+    {
+      "name": "marks",
+      "type": "shape",
+      "style": ["geoshape"],
+      "from": {"data": "source_0"},
+      "encode": {
+        "update": {
+          "fill": {"scale": "color", "field": "Protestants"},
+          "tooltip": {
+            "signal": "{\"Region\": isValid(datum[\"properties.NAME\"]) ? datum[\"properties.NAME\"] : \"\"+datum[\"properties.NAME\"], \"Protestants\": format(datum[\"Protestants\"], \"\")}"
+          },
+          "ariaRoleDescription": {"value": "geoshape"},
+          "description": {
+            "signal": "\"Protestants: \" + (format(datum[\"Protestants\"], \"\")) + \"; Region: \" + (isValid(datum[\"properties.NAME\"]) ? datum[\"properties.NAME\"] : \"\"+datum[\"properties.NAME\"])"
+          }
+        }
+      },
+      "transform": [{"type": "geoshape", "projection": "projection"}]
+    }
+  ],
+  "scales": [
+    {
+      "name": "color",
+      "type": "linear",
+      "domain": {"data": "source_0", "field": "Protestants"},
+      "range": "heatmap",
+      "interpolate": "hcl",
+      "zero": false
+    }
+  ],
+  "legends": [
+    {
+      "fill": "color",
+      "gradientLength": {"signal": "clamp(height, 64, 200)"},
+      "title": "Protestants"
+    }
+  ],
+  "config": {}
+}
