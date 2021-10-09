@@ -1,10 +1,10 @@
 {
   "$schema": "https://vega.github.io/schema/vega/v5.json",
   "description": "Religion of 1026 participants",
+  "autosize": {"type": "fit-x", "contains": "padding"},
   "background": "white",
   "padding": 5,
-  "width": 500
-  "height": 500,
+  "height": 250,
   "data": [
     {"name": "religion_highlight_store"},
     {
