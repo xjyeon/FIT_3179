@@ -1,0 +1,35 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/xjyeon/FIT_3179/main/religion-survey-results%20(2).csv"
+  },
+  "mark": "rect",
+  "encoding": {
+    "y": {
+      "field": "What is your present religion, if any?",
+      "type": "nominal",
+      "title": "Religion"
+    },
+    "x": {"field": "US Region", "type": "nominal"},
+    "color": {
+      "aggregate": "count",
+      "field": "What is your present religion, if any?",
+      "title": "Respondents"
+    },
+    "tooltip": [
+      {
+        "field": "What is your present religion, if any?",
+        "type": "nominal",
+        "title": "Religion"
+      },
+      {
+        "aggregate": "count",
+        "field": "What is your present religion, if any?",
+        "type": "nominal",
+        "title": "Number of Respondents"
+      },
+      {"field": "US Region", "type": "nominal", "title": "US Region"}
+    ]
+  },
+  "config": {"axis": {"grid": true, "tickBand": "extent"}}
+}
